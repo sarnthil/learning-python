@@ -64,15 +64,14 @@ Implment a non-recursive version of the function fib(n) from the lecture.
 Compare runtimes for inputs 10, 20, 30, 35.
 '''
 def fitbit(n):
-
-def fibonaci():
-    yield 1
-    yield 1
-    a = 1
-    b = 1
-    while True:
-        a,b = a+b, a
-        yield a
+    def fibonaci():
+        yield 1
+        yield 1
+        a = 1
+        b = 1
+        while True:
+            a,b = a+b, a
+            yield a
 
 
 
