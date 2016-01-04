@@ -44,7 +44,15 @@ class Tree(object):
     def walk(self):
         pass
     def walk_leaves(self):
-        pass
+        leaves = []
+        def get_leaves(self):
+            if tree is not None:
+                if leaf(tree):
+                    leaves.append(tree)
+                for t in self.children:
+                    get_leaves(t)
+        get_leaves(self)
+        return leaves
     def attach(self, other):
         pass
     def delete(self):
