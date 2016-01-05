@@ -16,8 +16,9 @@ Methods:
     .walk() (iterate over all nodes in the subtree)
     .walk_leaves() (iterate over all leafs in the subtree)
     .attach(other) (to attach the 'other' tree as a child to the tree)
-    .delete() (to delete the subtree)
+    .empty() (to empty the subtree, turning the node into a leaf)
 '''
+
 class Tree(object):
     def __init__(self, label):
         self.label = label
@@ -42,18 +43,15 @@ class Tree(object):
         '''
         pass
     def walk(self):
-        pass
+        yield self
+        for child in self.children:
+            yield from child.walk()
     def walk_leaves(self):
-        leaves = []
-        def get_leaves(self):
-            if tree is not None:
-                if leaf(tree):
-                    leaves.append(tree)
-                for t in self.children:
-                    get_leaves(t)
-        get_leaves(self)
-        return leaves
+        if self.leaf:
+            yield self
+        for child in self.children:
+            yield from child.walk_leaves()
     def attach(self, other):
-        pass
-    def delete(self):
-        pass
+        self.children.append(other)
+    def empty(self):
+        self.children = []
