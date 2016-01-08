@@ -29,7 +29,7 @@ class Tree(object):
         return 1 + sum(child.size for child in self.children)
     @property
     def depth(self):
-        return 1 + max(child.depth for child in self.children)
+        return 1 + max((child.depth for child in self.children), default=0)
     @property
     def leaf(self):
         return len(self.children) == 0
@@ -59,8 +59,11 @@ class Tree(object):
                 tokens.pop(0)
                 raise StopIteration
             yield Tree.tree(tokens)
+    @property
+    def text(self):
+        return ' '.join(self.label for self in self.walk_leaves())
     def __str__(self):
-        return "Here is a string representation of the tree: \n {}\n {}".format(self._wrap(),' '.join(tree.label for tree in self.walk_leaves()))
+        return "Here is a string representation of the tree: \n {}\n {}".format(self._wrap(),self.text)
     def _wrap(self):
         '''Returns something like "Tree.from_string('(S (NP Peter))')"
         '''
