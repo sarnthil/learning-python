@@ -18,6 +18,7 @@ Methods:
     .attach(other) (to attach the 'other' tree as a child to the tree)
     .empty() (to empty the subtree, turning the node into a leaf)
 '''
+import re
 
 class Tree(object):
     def __init__(self, label):
@@ -33,15 +34,41 @@ class Tree(object):
     def leaf(self):
         return len(self.children) == 0
     @staticmethod
+    def tokenize(string):
+        pattern = r'\(|\)|[^ ()]+'
+        return re.findall(pattern, string)
+    @staticmethod
     def from_string(string):
         '''Takes something like "(S (NP Peter))" and returns a tree'''
-        pass
+        tokenslist = Tree.tokenize(string)
+        return Tree.tree(tokenslist)
+    @staticmethod
+    def tree(tokenslist):
+        t = tokenslist.pop(0)
+        if t == '(':
+            foo = Tree(tokenslist.pop(0))
+            for subtree in Tree.trees(tokenslist):
+                foo.children.append(subtree)
+            return foo
+        else:
+            return Tree(t)
+    @staticmethod
+    def trees(tokens):
+        while True:
+            if tokens[0] == ')':
+                tokens.pop(0)
+                raise StopIteration
+            yield Tree.tree(tokens)
     def __str__(self):
-        pass
-    def __repr__(self):
+        return "Here is a string representation of the tree: \n {}\n {}".format(self._wrap(),' '.join(tree.label for tree in self.walk_leaves()))
+    def _wrap(self):
         '''Returns something like "Tree.from_string('(S (NP Peter))')"
         '''
-        pass
+        if self.leaf:
+            return self.label
+        return '({} {})'.format(self.label, ' '.join(child._wrap() for child in self.children))
+    def __repr__(self):
+        return "Tree.from_string('{}')".format(self._wrap())
     def walk(self):
         yield self
         for child in self.children:
