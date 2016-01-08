@@ -17,6 +17,8 @@ Methods:
     .walk_leaves() (iterate over all leafs in the subtree)
     .attach(other) (to attach the 'other' tree as a child to the tree)
     .empty() (to empty the subtree, turning the node into a leaf)
+
+    24/25 (missing docstrings!)
 '''
 import re
 
