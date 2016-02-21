@@ -87,3 +87,54 @@ class Tree(object):
         self.children.append(other)
     def empty(self):
         self.children = []
+
+
+class PTree(Tree):
+    def __init__(self, label, probability=1):
+        super().__init__(label)
+        self.probability = probability
+    @property
+    def prob(self):
+        result = 1
+        for node in self.walk():
+            result *= node.probability
+        return result
+    def _wrap(self):
+        '''Returns something like "PTree.from_string('0.4:(S 0.9:(NP Peter))')"
+        '''
+        if self.leaf:
+            return self.label
+        return '{}:({} {})'.format(
+                self.probability,
+                self.label,
+                ' '.join(child._wrap() for child in self.children),
+                )
+    @staticmethod
+    def from_string(string):
+        '''Takes something like "0.4:(S 0.9:(NP Peter))" and returns a tree'''
+        tokenslist = Tree.tokenize(string)
+        return PTree.tree(tokenslist)
+    @staticmethod
+    def tree(tokenslist):
+        t = tokenslist.pop(0)
+        if t.endswith(':'):
+            prob = float(t[:-1])
+            tokenslist.pop(0)
+            foo = PTree(tokenslist.pop(0), prob)
+            for subtree in PTree.trees(tokenslist):
+                foo.children.append(subtree)
+            return foo
+        elif t == '(':
+            foo = PTree(tokenslist.pop(0))
+            for subtree in PTree.trees(tokenslist):
+                foo.children.append(subtree)
+            return foo
+        else:
+            return PTree(t)
+    @staticmethod
+    def trees(tokens):
+        while True:
+            if tokens[0] == ')':
+                tokens.pop(0)
+                raise StopIteration
+            yield PTree.tree(tokens)
