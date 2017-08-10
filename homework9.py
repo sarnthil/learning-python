@@ -65,7 +65,8 @@ class LinkedList:
             return self.val
         else:
             return self.link.lst()
-
+    
+    # let's cheat here
     def rev(self):
         return LinkedList(reversed(self))
 
